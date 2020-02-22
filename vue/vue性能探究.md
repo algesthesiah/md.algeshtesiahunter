@@ -28,15 +28,15 @@ expanded change: 点击节点展开渲染时间（这里统一统计最外层数
 
 #### demo-5
 
-![img](vue性能探究/5.png)
+![img](vue性能探究:5.png)
 
 #### demo-6
 
-![img](vue性能探究/6.png)
+![img](vue性能探究:6.png)
 
 #### demo-x
 
-![img](vue性能探究/x.png)
+![img](vue性能探究:x.png)
 
 ### 总结
 
