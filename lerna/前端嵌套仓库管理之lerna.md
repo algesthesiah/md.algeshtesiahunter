@@ -37,18 +37,26 @@ lerna init
 
 每个子 `package` 都有自己的 `node_modules` ，通过这样设置后，只有顶层有一个 `node_modules`，修改顶层 `package.json` and `lerna.json`
 
+package.json
+
 ``` json
-// #package.json
- "private": true,
+{
+  "private": true,
   "workspaces": [
     "packages/*"
-  ],
+  ]
+}
+```
 
-// lerna.json
+ lerna.json
+
+ ``` json
+{
   "packages": ["packages/*"],
   "useWorkspaces": true,
   "npmClient": "yarn",
   "version": "0.0.0"
+}
 ```
 
 #### 生成一个npm包
