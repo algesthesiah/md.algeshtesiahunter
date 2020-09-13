@@ -10,11 +10,11 @@
 
 #### 先初始化下
 
-``` js
-// 确保安装了lerna
+``` bash
+# 确保安装了lerna
 npm install lerna -g
 
-// 在仓库初始化lerna配置
+#  在仓库初始化lerna配置
 lerna init
 ```
 
@@ -22,30 +22,39 @@ lerna init
 
 每个子 `package` 都有自己的 `node_modules` ，通过这样设置后，只有顶层有一个 `node_modules`，修改顶层 `package.json` and `lerna.json`
 
-``` js
-# package.json
- "private": true,
+  package.json
+
+``` json
+{
+  "private": true,
   "workspaces": [
     "packages/*"
   ],
+}
 
-# lerna.json
+```
+
+ lerna.json
+
+``` json
+{
   "packages": ["packages/*"],
   "useWorkspaces": true,
   "npmClient": "yarn",
   "version": "0.0.0"
+}
 ```
 
 #### 生成一个npm包
 
-``` js
+``` bash
 lerna create @algesthesiah/vue-lazy-view
 
 ```
 
 ##### 配置package.json 交互式基础信息
 
-``` js
+``` bash
 package name: (@algesthesiah/vue-lazy-view) y
 version: (0.0.1) y
 description:Vue.js 2.x component level lazy loading solution
@@ -58,7 +67,7 @@ repository:https://github.com/Algesthesiahunter/base.git
 
 将老包里面的依赖和脚本copy进上面的配置文件中最后得到如下配置
 
-``` js
+``` json
 {
   "name": "@algesthesiah/vue-lazy-view",
   "version": "0.0.6",
@@ -118,7 +127,7 @@ repository:https://github.com/Algesthesiahunter/base.git
 
 git备注上面的更改信息
 
-``` js
+``` bash
 gaa
 gcmsg 'fix(lerna) add vue-lazy-view' -n
 gp origin master
@@ -127,7 +136,7 @@ gp origin master
 万事俱备，发布把
 发布之前需要打包和下载依赖
 
-``` js
+``` bash
 lerna bootstrap
 lerna publish --dist-tag=vue-lazy-view
 ```

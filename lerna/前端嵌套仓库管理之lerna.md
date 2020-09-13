@@ -19,13 +19,13 @@
 
 #### 先安装下
 
-``` js
+``` bash
 npm install lerna -g
 ```
 
 #### 进入我们的代码仓库，创建相关lerna目录
 
-``` js
+``` bash
 lerna init
 ```
 
@@ -37,14 +37,14 @@ lerna init
 
 每个子 `package` 都有自己的 `node_modules` ，通过这样设置后，只有顶层有一个 `node_modules`，修改顶层 `package.json` and `lerna.json`
 
-``` js
-# package.json
+``` json
+// #package.json
  "private": true,
   "workspaces": [
     "packages/*"
   ],
 
-# lerna.json
+// lerna.json
   "packages": ["packages/*"],
   "useWorkspaces": true,
   "npmClient": "yarn",
@@ -53,7 +53,7 @@ lerna init
 
 #### 生成一个npm包
 
-``` js
+``` bash
 lerna create <包名> [目录]
 lerna create beauty-webpack
 ```
@@ -62,40 +62,42 @@ lerna create beauty-webpack
 
 功能类似于npm install 包名，scope指定为某个包添加依赖，如果没有scope选项，就会为packages下所有的包添加这个依赖；dev选项代表依赖添加进devDependencies中。
 
-``` js
+``` bash
 lerna add 包名 [--scope=特定的某个包] [--dev]
 lerna add webpack packages/beauty-webpack
 ```
 
 #### 查看整个工程目录
 
-``` js
+``` bash
 lerna list [-l]
 ```
 
 #### 为每个包安装依赖
 
-``` js
+``` bash
 lerna bootstrap
 ```
 
 #### 删除包下面的node_modules
 
-``` js
-上面的命令安装依赖会在每个包目录下生成node_modules，下面的命令就是将node_modules删除
+``` bash
+lerna clean
 ```
+
+上面的命令安装依赖会在每个包目录下生成node_modules，下面的命令就是将node_modules删除
 
 #### 导入外部的包
 
 我们用git下载到本地，然后用上面的命令导入到packages/plugins目录下，将已经存在的npm包代码库迁移到 lerna 仓库中。
 
-``` js
+``` bash
 lerna import 外部包的位置 --dest=工程下的位置
 ```
 
 #### 运行包的script命令
 
-``` js
+``` bash
 lerna run 命令 [--scope=特定的某个包]
 ```
 
@@ -103,7 +105,7 @@ lerna run 命令 [--scope=特定的某个包]
 
 #### 查看diff
 
-``` js
+``` bash
 lerna diff
 ```
 
@@ -111,10 +113,14 @@ lerna diff
 
 #### lerna changed
 
+``` bash
+lerna changed
+```
+
 当你发布完成后再运行这个命令，红色区域就会显示No changed packages found。
 
 #### 发布
 
-``` js
+``` bash
 lerna publish [--dist-tag=tag名]
 ```
