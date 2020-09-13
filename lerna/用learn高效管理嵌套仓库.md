@@ -61,7 +61,7 @@ repository:https://github.com/Algesthesiahunter/base.git
 ``` js
 {
   "name": "@algesthesiah/vue-lazy-view",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "Vue.js 2.x component level lazy loading solution",
   "keywords": [
     "vue"
@@ -85,10 +85,9 @@ repository:https://github.com/Algesthesiahunter/base.git
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
-    "cross-env": "^5.0.5",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.2.1",
     "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^1.1.4",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "npm:dart-sass",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
@@ -109,9 +108,9 @@ repository:https://github.com/Algesthesiahunter/base.git
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "cross-env NODE_ENV=production webpack  --progress",
-    "publish": "npm run build && npm publish"
-  }
+    "build": "cross-env NODE_ENV=production webpack  --progress"
+  },
+  "gitHead": "f2c659911ece8d3a1c048c8d97ad30ad8ee69ede"
 }
 ```
 
