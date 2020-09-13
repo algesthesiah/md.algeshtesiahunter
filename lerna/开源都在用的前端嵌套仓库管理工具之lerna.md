@@ -15,6 +15,10 @@
 
 当整个项目被划分为多个 `NPM包` 时，这种组织性的改进通常是有代价的: `各种包在它们的包中经常有许多重复的依赖关系` 。结果在各种 `node_modules` 目录中有数百或数千个重复的文件。`Lerna` 通过使管理由许多NPM包组成的项目变得 `更容易` 。
 
+### 官方理念
+
+yarn官方推荐的做法,用yarn来处理依赖问题，用lerna来处理发布问题。能用yarn做的就用yarn，lerna还没做到万能
+
 ### 使用介绍
 
 #### 先安装下
@@ -75,6 +79,28 @@ lerna add 包名 [--scope=特定的某个包] [--dev]
 lerna add webpack packages/beauty-webpack
 ```
 
+#### 删除依赖
+
+在有删除需求的时候发现`lerna`依赖命令不是很强大。
+
+#### yarn 替代 lerna 处理依赖
+
+其实 `lerna` 底层也是走的 `yarn` (配置中心注明`"npmClient": "yarn"`)
+
+安装依赖分为三种场景：
+
+1. 给某个package安装依赖：yarn workspace packageB add packageA 将packageA作为packageB的依赖进行安装
+2. 给所有的package安装依赖: 使用​yarn workspaces add lodash​ 给所有的package安装依赖
+3. 给root 安装依赖：一般的公用的开发工具都是安装在root里，如​typescript​,我们使用​yarn add -W -D typescript​来给root安装依赖
+
+对应的删除命令如下：
+
+``` bash
+yarn workspace packageB remove packageA
+yarn workspaces remove lodash
+yarn remove -W -D typescript
+```
+
 #### 查看整个工程目录
 
 ``` bash
@@ -110,6 +136,114 @@ lerna run 命令 [--scope=特定的某个包]
 ```
 
 和npm run [命令] 没什么区别，如果没有scope选项，lerna会运行每个包的script命令
+
+#### 项目构建
+
+普通项目：建立一个​build​的npm script，使用​yarn build​即可完成项目构建
+
+多子包项目:区别于普通项目之处在于各个package之间存在相互依赖，如packageB只有在packageA构建完之后才能进行构建，否则就会出错，这实际上要求我们以一种拓扑排序的规则进行构建。
+
+我们可以自己构建拓扑排序规则，很不幸的是yarn的workspace暂时并未支持按照拓扑排序规则执行命令,虽然该 rfc已经被accepted，但是尚未实现
+
+#### 版本升级及发包
+
+项目测试完成后，就涉及到版本发布，版本发布一般涉及到如下一些步骤
+
+##### version_bump
+
+发版的时候需要更新版本号，这时候如何更新版本号就是个问题，一般大家都会遵循 semVer语义，如果版本之间的提交记录较少，能够较为容易的手动更新版本好，但这样也存在人为失误的可能，更好的办法是根据git的提交记录自动更新版本号，实际上只要我们的git commit message符合 Conventional commit规范，即可通过工具根据git提交记录，更新版本号，简单的规则如下
+
+1. 存在feat提交： 需要更新minor版本
+2. 存在fix提交： 需要更新major版本
+3. 存在BREAKING CHANGE提交： 需要更新大版本
+
+##### 常用的type类别
+
+type ：用于表明我们这次提交的改动类型，是新增了功能？还是修改了测试代码？又或者是更新了文档？总结以下 11 种类型：
+build：主要目的是修改项目构建系统(例如 glup，webpack，rollup 的配置等)的提交
+ci：主要目的是修改项目继续集成流程(例如 Travis，Jenkins，GitLab CI，Circle等)的提交
+docs：文档更新
+feat：新增功能
+fix：bug 修复
+perf：性能优化
+refactor：重构代码(既没有新增功能，也没有修复 bug)
+style：不影响程序逻辑的代码修改(修改空白字符，补全缺失的分号等)
+test：新增测试用例或是更新现有测试
+revert：回滚某个更早之前的提交
+chore：不属于以上类型的其他类型(日常事务)
+
+##### 生成changelog
+
+为了方便查看每个package每个版本解决了哪些功能，我们需要给每个package都生成一份changelog方便用户查看各个版本的功能变化。同理只要我们的commit记录符合 [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/#summary)规范，即可通过工具为每个package生成changelog文件
+
+##### 生成git tag
+
+为了方便后续回滚问题及问题排查通常需要给每个版本创建一个git tag
+
+##### git 发布版本
+
+每次发版我们都需要单独生成一个commit记录来标记
+
+##### 发布npm包
+
+发布完git后我们还需要将更新的版本发布到npm上，以便外部用户使用
+我们发现手动的执行这些操作是很麻烦的且及其容易出错，幸运的是lerna可以帮助我们解决这些问题
+> yarn官方并不打算支持发布流程，只是想做好包管理工具，因此这部分还是需要通过lerna支持
+lerna提供了publish和version来支持版本的升级和发布
+publish的功能可以即包含version的工作，也可以单纯的只做发布操作。
+
+#### lerna version
+
+lerna version的作用是进行version bump,支持手动和自动两种模式
+只发布某个package
+
+不支持，lerna官方不支持仅发布某个package，如果需要，只能自己手动的进入package进行发布，这样lerna自带的各种功能就需要手动完成且可能和lerna的功能相互冲突
+
+由于lerna会自动的监测git提交记录里是否包含指定package的文件修改记录，来确定版本更新，这要求设置好合理的ignore规则（否则会造成频繁的，无意义的某个版本更新），好处是其可以自动的帮助package之间更新版本
+
+例如如果ui-form依赖了ui-button，如果ui-button发生了版本变动，会自动的将ui-form的对ui-button版本依赖更新为ui-button的最新版本。 如果ui-form发生了版本变动，对ui-button并不会造成影响。
+
+##### 自动选择发布版本
+
+使用--conventional-commits 参数会自动的根据conventional commit规范和git commit message记录帮忙确定更新的版本号。
+
+``` bash
+lerna version --conventional-commits
+```
+
+##### 手动选择发布版本
+
+如果git commit message发现不太靠谱，且无法修改的话，那么需要手动的确认新版本，version默认是手动选择版本
+
+``` bash
+lerna version
+```
+
+version成功后会自动的推送到主分支
+lerna version自动生成的提交格式为“ publish xxx",并不符合conventional-commit规范，因此需要加以修改，我们通过message参数可以修改自动生成的提交记录
+
+``` json
+// lerna.json
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "ignoreChanges": ["*.md"],
+      "verifyAccess": false,
+      "verifyRegistry": false,
+      "message":"chore: publish" // 自定义version生成的message记录
+    }
+  }
+}
+```
+
+##### changelog.md
+
+version完成后会自动生成changelog.md，但是由于lerna是根据什么规则来生成changelog的规则尚不清楚
 
 #### 查看diff
 
