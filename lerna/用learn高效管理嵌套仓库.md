@@ -133,6 +133,7 @@ yarn add -W -D @commitlint/config-conventional @commitlint/cli lint-staged husky
 
 ``` json
 // package.json
+{
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
@@ -143,6 +144,7 @@ yarn add -W -D @commitlint/config-conventional @commitlint/cli lint-staged husky
       "path": "cz-conventional-changelog"
     }
   }
+}
 ```
 
 ``` js
