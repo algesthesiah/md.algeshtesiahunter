@@ -70,7 +70,7 @@ repository:https://github.com/Algesthesiahunter/base.git
 ``` json
 {
   "name": "@algesthesiah/vue-lazy-view",
-  "version": "0.0.6",
+  "version": "0.0.12",
   "description": "Vue.js 2.x component level lazy loading solution",
   "keywords": [
     "vue"
@@ -117,9 +117,74 @@ repository:https://github.com/Algesthesiahunter/base.git
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "cross-env NODE_ENV=production webpack  --progress"
+    "build": "cross-env sb=1 NODE_ENV=production webpack  --progress"
   },
   "gitHead": "f2c659911ece8d3a1c048c8d97ad30ad8ee69ede"
+}
+```
+
+#### 优化release changelog
+
+限制优雅的`git commit`提交，并自动生成直观的`release changelog`
+
+``` bash
+yarn add -W -D @commitlint/config-conventional @commitlint/cli lint-staged husky commitizen cz-conventional-changelog lint-staged standard-version
+```
+
+``` json
+// package.json
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+```
+
+``` js
+// commitlint.config.js
+module.exports = {
+  extends: [
+    "@commitlint/config-conventional"
+  ]
+};
+```
+
+``` json
+// lerna.json
+{
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "0.0.12",
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "publish": {
+      "ignoreChanges": [
+        "*.md"
+      ],
+      "verifyAccess": false,
+      "verifyRegistry": false,
+      "message": "chore: publish"
+    }
+  },
+  "changelog": {
+    "repo": "base",
+    "labels": {
+      "PR: New Feature": ":rocket: New Features",
+      "PR: Breaking Change": ":boom: Breaking Changes",
+      "PR: Bug Fix": ":bug: Bug Fix",
+      "PR: Documentation": ":memo: Documentation",
+      "PR: Internal": ":house: Internal",
+      "PR: Underlying Tools": ":hammer: Underlying Tools"
+    },
+    "cacheDir": ".changelog"
+  }
 }
 ```
 
@@ -133,12 +198,16 @@ gcmsg 'fix(lerna) add vue-lazy-view' -n
 gp origin master
 ```
 
-万事俱备，发布把
-发布之前需要打包和下载依赖
+生成并提交`changelog`
 
 ``` bash
-lerna bootstrap
-lerna publish --dist-tag=vue-lazy-view
+npx standard-version
+```
+
+万事俱备，发布把
+
+``` bash
+lerna publish
 ```
 
 ### 缺陷
