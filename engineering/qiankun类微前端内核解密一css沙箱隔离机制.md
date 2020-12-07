@@ -14,8 +14,6 @@ qiankun模式是企业级后台迁移微前端的一个标杆模式，稍微有�
 
 > 单纯论微前端有多种方式，上面列表微前端核心功能也有多种实现方式，为了高效专注解密，本主题仅仅解密类qiankun微前端内核处理方式
 
-## JS沙箱
-
 ## CSS沙箱
 
 ### shadowDOM
@@ -312,3 +310,8 @@ export class ScopedCSS {
 ```
 
 主要通过正则匹配改写了css，`ruleMedia`函数和`ruleSupport`类似原理直接忽略
+
+#### 总结
+
+传入配置参数如果开启了`shadowDOM`的话直接让子应用插入`shadowDOM`的root实现css隔离，如果开启了`scopedCSS`
+遍历从配置传进来的`appElement`上的`style`标签，巧妙利用`CSSRule`、正则匹配改写css前缀实现隔离
