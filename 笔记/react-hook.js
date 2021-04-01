@@ -55,7 +55,7 @@ function dispatchAction(queue, action) {
     schedule()
 }
 function schedule() {
-    workInProgressHook = fiber.memoizedState
+     workInProgressHook = fiber.memoizedState
     const app = fiber.stateNode()
     isMount = false
     return { app, fiber }
