@@ -1,4 +1,4 @@
-> 初听不识曲中意,再听已是曲中人，正如这首诗一样初学 Ts 的时候不太理解高级用法，现在用多了感觉到这里面的重要性，所以整理一波经验值
+> 初听不识曲中意，再听已是曲中人，正如这首诗一样初学 Ts 的时候不太理解高级用法，现在用多了感觉到这里面的重要性，所以整理一波经验值
 
 ### 交叉类型（&）
 
@@ -163,10 +163,10 @@ const render = (props: Partial<ButtonProps> = {}) => {
 
 #### Required
 
-Required 的作用刚好与 Partial 相反，就是将接口中所有可选的属性改为必须的，区别就是把 Partial 里面的 ? 替换成了 -?。
+Required 的作用刚好与 Partial 相反，就是将接口中所有可选的属性改为必须的，区别就是把 Partial 里面的 ？替换成了 -?。
 
 ``` ts
-// 其中-?是代表可移除?这个修改器的标识。
+// 其中-？是代表可移除？这个修改器的标识。
 type Required<T> = {
     [P in keyof T]-?: T[P]
 }
@@ -264,7 +264,7 @@ type ExcludeKeys = Exclude<keyof Worker, keyof Student>
 
 #### Pick
 
-Pick 主要用于提取接口的某几个属性。做过 Todo 工具的同学都知道，Todo工具只有编辑的时候才会填写描述信息，预览的时候只有标题和完成状态，所以我们可以通过 Pick 工具，提取 Todo 接口的两个属性，生成一个新的类型 TodoPreview。
+Pick 主要用于提取接口的某几个属性。做过 Todo 工具的同学都知道，Todo 工具只有编辑的时候才会填写描述信息，预览的时候只有标题和完成状态，所以我们可以通过 Pick 工具，提取 Todo 接口的两个属性，生成一个新的类型 TodoPreview。
 
 ``` ts
 type Pick<T, K extends keyof T> = {
