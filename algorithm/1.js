@@ -18,6 +18,7 @@ function findSamePre(arr) {
         i += 1;
     }
     return res;
+
 }
 findSamePre(a);
 
